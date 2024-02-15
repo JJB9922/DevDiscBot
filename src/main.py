@@ -2,6 +2,7 @@ import discord
 import dotenv
 import os
 import constants
+import uwuify
 from discord.ext import tasks
 from humblescraper import run_humble_check, check_and_send_new_bundles
 
@@ -36,6 +37,26 @@ async def on_message(message):
 
     if message.content.startswith('d.humble'):
         await check_and_send_new_bundles(bot)
+        
+@bot.event
+async def on_message(message):
+    if message.author == bot.user:
+        return
+
+    for item in message.author.roles:
+        if item.id == 1207755273079627888:
+            flags = uwuify.SMILEY | uwuify.YU | uwuify.STUTTER
+            await message.channel.send(f'<@{message.author.id}>: {uwuify.uwu(message.content, flags=flags)}')
+            await message.delete()
+            
+@bot.event
+async def on_message(message):
+    if message.author == bot.user and message.author.id in constants.devList.values():
+        return
+
+    if message.content.startswith('d.clear'):
+        await message.channel.purge()
+
         
 @tasks.loop(hours=24)
 async def check_daily_bundles():

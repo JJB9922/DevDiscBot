@@ -1,26 +1,3 @@
 [
-    {
-        "description": "It\u2019s time to learn Java",
-        "image_url": "https://hb.imgix.net/3006a326b4beb635fa49652512e0cdc74ef3c658.jpg?auto=compress,format&fit=crop&h=353&w=616&s=3fe705ce7c97b54ad8e55f1b0135d088",
-        "title": "humble tech book bundle: java 2024 by o'reilly",
-        "url": "/books/java-2024-oreilly-books"
-    },
-    {
-        "description": "A full spectrum cybersecurity library",
-        "image_url": "https://hb.imgix.net/5029716fb8399d0ea702b88afbbc035b133453af.png?auto=compress,format&fit=crop&h=353&w=616&s=f8c50ce3d6262fdb50c69176d90aff23",
-        "title": "humble tech book bundle: cybersecurity 2024 from packt",
-        "url": "/books/cybersecurity-2024-from-packt-books"
-    },
-    {
-        "description": "Game development skills within reach",
-        "image_url": "https://hb.imgix.net/293583a36db5d65c0e5de37281651d5ad8f93599.jpg?auto=compress,format&fit=crop&h=353&w=616&s=cc6651666932bb53ed48162548ad63eb",
-        "title": "humble tech book bundle: game design and programming by pearson",
-        "url": "/books/game-design-and-programming-pearson-books"
-    },
-    {
-        "description": "Cloud skills for data, IoT & more!",
-        "image_url": "https://hb.imgix.net/7046227edfbc07bd818855c4eba298236cd64d23.jpg?auto=compress,format&fit=crop&h=353&w=616&s=3b386c32607c267e5ce23e1f414800d9",
-        "title": "humble tech book bundle: aws, azure, and google cloud development by o'reilly",
-        "url": "/books/aws-azure-and-google-cloud-development-oreilly-books"
-    }
+
 ]
