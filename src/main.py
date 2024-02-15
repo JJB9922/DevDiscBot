@@ -30,34 +30,28 @@ async def makers(ctx):
     embed = discord.Embed(description=f'**Bot Contributors: **\n{"".join([f"<@{m}>{newline}" for m in constants.devList.values()])}', color=0xC3B1E1)
     await ctx.respond(embed=embed)
         
-@bot.event
-async def on_message(message):
+@bot.command(description="Refresh the humble bundle data")
+async def refreshhumble(message):
     if message.author == bot.user and message.author.id in constants.devList.values():
-        return
-
-    if message.content.startswith('d.humble'):
         await check_and_send_new_bundles(bot)
+        
+@bot.command(description="Purge the chat of the last 10 messages")
+async def clear(ctx):
+    if ctx.author.id in constants.devList.values():
+        await ctx.channel.purge(limit=10)
         
 @bot.event
 async def on_message(message):
     if message.author == bot.user:
         return
-
+    
     for item in message.author.roles:
         if item.id == 1207755273079627888:
             flags = uwuify.SMILEY | uwuify.YU | uwuify.STUTTER
             await message.channel.send(f'<@{message.author.id}>: {uwuify.uwu(message.content, flags=flags)}')
             await message.delete()
-            
-@bot.event
-async def on_message(message):
-    if message.author == bot.user and message.author.id in constants.devList.values():
-        return
 
-    if message.content.startswith('d.clear'):
-        await message.channel.purge()
 
-        
 @tasks.loop(hours=24)
 async def check_daily_bundles():
     await check_and_send_new_bundles(bot)
