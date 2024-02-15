@@ -11,34 +11,34 @@ botToken = os.getenv('BOT_API_TOKEN')
 intents = discord.Intents.default()
 intents.message_content = True
 
-client = discord.Client(intents=intents)
+bot = discord.Bot(intents=intents)
 
-@client.event
+@bot.event
 async def on_ready():
-    print(f'Logged in as {client.user}')
+    print(f'Logged in as {bot.user}')
     print("Starting daily bundle checker...")
-    check_daily_bundles.start()  # Start the task
+    check_daily_bundles.start()
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-
-    if message.content.startswith('d.ping'):
-        await message.channel.send(f'Pong! {round(client.latency * 1000)}ms')
+@bot.command(description="Ping the bot to check if it's online")
+async def ping(ctx):
+    await ctx.respond(f'Pong! {round(bot.latency * 1000)}ms')
         
-@client.event
+@bot.command(description="List the bot contributors")
+async def makers(ctx):
+    newline = '\n'
+    embed = discord.Embed(description=f'**Bot Contributors: **\n{"".join([f"<@{m}>{newline}" for m in constants.devList.values()])}', color=0xC3B1E1)
+    await ctx.respond(embed=embed)
+        
+@bot.event
 async def on_message(message):
-    if message.author == client.user:
+    if message.author == bot.user and message.author.id in constants.devList.values():
         return
 
-    if message.content.startswith('d.makers'):
-
-        embed = discord.Embed(description=f'**Bot Contributors: **\n{", ".join([f"<@{m}>" for m in DevLinkCredits.devList.values()])}', color=0xC3B1E1)
-        await message.reply(embed=embed, mention_author=False)
+    if message.content.startswith('d.humble'):
+        await check_and_send_new_bundles(bot)
         
 @tasks.loop(hours=24)
 async def check_daily_bundles():
-    await check_and_send_new_bundles(client)
+    await check_and_send_new_bundles(bot)
 
-client.run(botToken)
+bot.run(botToken)
