@@ -44,15 +44,14 @@ async def clear(ctx):
 async def on_message(message):
     if message.author == bot.user:
         return
-    
-    if(len(message.author.roles) > 0):
-        for item in message.author.roles:
-            if item.name == "Forsaken...":
-                uwu = uwuipy(None, 0.3, 0.3, 0.3, 0.3, True)
-                webhook = await message.channel.create_webhook(name=message.author.display_name)
-                await webhook.send(f'{uwu.uwuify(message.content)}', username=message.author.display_name, avatar_url=message.author.avatar.url)
-                await webhook.delete()
-                await message.delete()
+
+    try:
+        if any(role.name == "Forsaken..." for role in message.author.roles):        
+            uwu = uwuipy(None, 0.3, 0.3, 0.3, 0.3, True)
+            webhook = await message.channel.create_webhook(name=message.author.display_name)
+            await webhook.send(f'{uwu.uwuify(message.content)}', username=message.author.display_name, avatar_url=message.author.avatar.url)
+            await webhook.delete()
+            await message.delete()
 
 
 @tasks.loop(hours=24)
