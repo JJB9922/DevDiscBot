@@ -30,9 +30,9 @@ async def on_message(message):
         return
 
     if message.content.startswith('d.makers'):
-        await message.channel.send("My makers are:\n")
-        for member in DevLinkCredits.devList:
-            await message.channel.send(f'<@{DevLinkCredits.devList[member]}>\n')
+
+        embed = discord.Embed(description=f'**Bot Contributors: **\n{", ".join([f"<@{m}>" for m in DevLinkCredits.devList.values()])}', color=0xC3B1E1)
+        await message.reply(embed=embed, mention_author=False)
         
 #check_humble_bundle(client)
 
