@@ -2,7 +2,7 @@ import discord
 import dotenv
 import os
 import constants
-import uwuify
+from uwuipy import uwuipy
 from discord.ext import tasks
 from humblescraper import run_humble_check, check_and_send_new_bundles
 
@@ -45,11 +45,14 @@ async def on_message(message):
     if message.author == bot.user:
         return
     
-    for item in message.author.roles:
-        if item.id == 1207755273079627888:
-            flags = uwuify.SMILEY | uwuify.YU | uwuify.STUTTER
-            await message.channel.send(f'<@{message.author.id}>: {uwuify.uwu(message.content, flags=flags)}')
-            await message.delete()
+    if(len(message.author.roles) > 0):
+        for item in message.author.roles:
+            if item.id == 1207755273079627888 or item.id == 1207777850070011994:
+                uwu = uwuipy(None, 0.3, 0.3, 0.3, 0.3, True)
+                webhook = await message.channel.create_webhook(name=message.author.display_name)
+                await webhook.send(f'{uwu.uwuify(message.content)}', username=message.author.display_name, avatar_url=message.author.avatar.url)
+                await webhook.delete()
+                await message.delete()
 
 
 @tasks.loop(hours=24)
