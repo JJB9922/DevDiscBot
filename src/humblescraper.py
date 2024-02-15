@@ -1,33 +1,9 @@
 import json
-import requests
-from bs4 import BeautifulSoup
-import discord
 import os
-
-keywords = [
-    'java', 
-    'python',
-    'C++',
-    'C#',
-    'web development',
-    'html',
-    'css',
-    'full stack',
-    'ux',
-    'javascript', 
-    'ruby',
-    'cybersecurity',
-    'security',
-    'hacker',
-    'hacking',
-    'cloud',
-    'game development'
-    'game design',
-    'programming',
-    'unity',
-    'unreal',
-    'linux'
-]
+import requests
+import discord
+import constants
+from bs4 import BeautifulSoup
 
 def extract_json_data(url):
     page = requests.get(url)
@@ -52,7 +28,7 @@ def filter_and_save_books_with_keywords_to_file(json_data, filename):
         product_url = product.get('product_url', '')
         image_url = product.get('tile_image', '')
 
-        if any(keyword in tile_name for keyword in keywords):
+        if any(keyword in tile_name for keyword in constants.humblekeywords):
             filtered_books.append({
                 'title': tile_name,
                 'description': short_marketing_blurb,

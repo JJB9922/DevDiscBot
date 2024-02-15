@@ -1,13 +1,9 @@
 import discord
 import dotenv
 import os
-import DevLinkCredits
-import requests
-from bs4 import BeautifulSoup
-import discord
-import json
+import constants
+from discord.ext import tasks
 from humblescraper import run_humble_check, check_and_send_new_bundles
-import asyncio
 
 dotenv.load_dotenv()
 botToken = os.getenv('BOT_API_TOKEN')
@@ -21,7 +17,7 @@ client = discord.Client(intents=intents)
 async def on_ready():
     print(f'Logged in as {client.user}')
     print("Starting daily bundle checker...")
-    await check_daily_bundles(client);
+    check_daily_bundles.start()  # Start the task
 
 @client.event
 async def on_message(message):
@@ -30,28 +26,17 @@ async def on_message(message):
 
     if message.content.startswith('d.ping'):
         await message.channel.send(f'Pong! {round(client.latency * 1000)}ms')
-        
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-
-    if message.content.startswith('d.makers'):
+    
+    elif message.content.startswith('d.makers'):
         await message.channel.send("My makers are:\n")
-        for member in DevLinkCredits.devList:
-            await message.channel.send(f'<@{DevLinkCredits.devList[member]}>\n')
+        for member in constants.devList:
+            await message.channel.send(f'<@{constants.devList[member]}>\n')
 
-@client.event
-async def on_message(message):
-    if message.author == client.user: 
-        return
-
-    if message.content.startswith('d.humble') and message.author.id in DevLinkCredits.devList.values():
-        await check_and_send_new_bundles(client)  
-        
-async def check_daily_bundles(client):
-    while True:
+    elif message.content.startswith('d.humble') and message.author.id in DevLinkCredits.devList.values():
         await check_and_send_new_bundles(client)
-        await asyncio.sleep(24 * 3600) 
-        
+
+@tasks.loop(hours=24)
+async def check_daily_bundles():
+    await check_and_send_new_bundles(client)
+
 client.run(botToken)
