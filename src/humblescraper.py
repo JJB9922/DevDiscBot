@@ -58,7 +58,8 @@ async def send_humble_embed(embed_data, bot):
     )
     embed.add_field(name="Click Here to Buy", value=f"https://www.humblebundle.com{embed_data['url']}", inline=False)
     embed.set_image(url=embed_data['image_url'])
-    await bot.get_channel(1207442996161814578).send(embed=embed)
+    channel = discord.utils.get(bot.get_all_channels(), name="humble")
+    await bot.get_channel(channel.id).send(embed=embed)
 
 async def check_and_send_new_bundles(bot):
     filename = 'data/filtered_books.json'
