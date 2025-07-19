@@ -33,22 +33,10 @@ async def makers(ctx):
 @bot.command(description="Refresh the humble bundle data")
 async def refreshhumble(ctx):
     if ctx.author.id in constants.devList.values():
-        await ctx.respond("🔄 Checking for new humble bundles...")
-        try:
-            await check_and_send_new_bundles(bot)
-            await ctx.followup.send("✅ Humble bundle check completed!")
-        except Exception as e:
-            await ctx.followup.send(f"❌ Error: {str(e)}")
-            print(f"Error in refreshhumble: {e}")
-    else:
-        await ctx.respond("❌ You don't have permission to use this command.")
-
-@bot.command(description="Refresh the humble bundle data (detailed)")
-async def refreshhumbledetailed(ctx):
-    if ctx.author.id in constants.devList.values():
         await ctx.respond("🔄 Starting humble bundle check...")
         
         try:
+            # Get current bundles count
             filename = 'data/filtered_books.json'
             if os.path.exists(filename):
                 current_books = load_books_from_file(filename)
@@ -58,8 +46,10 @@ async def refreshhumbledetailed(ctx):
             
             await ctx.followup.send(f"📚 Current bundles in database: {current_count}")
             
+            # Run the check
             await check_and_send_new_bundles(bot)
             
+            # Get new count
             new_books = load_books_from_file(filename)
             new_count = len(new_books)
             difference = new_count - current_count
