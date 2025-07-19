@@ -8,10 +8,10 @@ from bs4 import BeautifulSoup
 def extract_json_data(url):
     page = requests.get(url)
     soup = BeautifulSoup(page.content, 'html.parser')
-    
+
     script_tag = soup.find('script', id='landingPage-json-data')
     json_data = json.loads(script_tag.contents[0].strip())
-    
+
     return json_data
 
 def filter_and_save_books_with_keywords_to_file(json_data, filename):
@@ -19,7 +19,7 @@ def filter_and_save_books_with_keywords_to_file(json_data, filename):
     books_data = data.get('books', [])
     mosaic_data = books_data.get('mosaic', [])
     bundles_data = mosaic_data[0].get('products', [])
-    
+
     filtered_books = []
 
     for product in bundles_data:
@@ -46,7 +46,7 @@ def load_books_from_file(filename):
 def run_humble_check():
     url = 'https://www.humblebundle.com/books'
     json_data = extract_json_data(url)
-    filename = 'data/filtered_books.json' 
+    filename = 'data/filtered_books.json'
     filter_and_save_books_with_keywords_to_file(json_data, filename)
     print('Latest humble bundle data saved to file')
 
@@ -58,20 +58,32 @@ async def send_humble_embed(embed_data, bot):
     )
     embed.add_field(name="Click Here to Buy", value=f"https://www.humblebundle.com{embed_data['url']}", inline=False)
     embed.set_image(url=embed_data['image_url'])
+    
     channel = discord.utils.get(bot.get_all_channels(), name="humble")
-    await bot.get_channel(channel.id).send(embed=embed)
+    if channel:
+        await channel.send(embed=embed)
+        print(f"Sent embed to #{channel.name}")
+    else:
+        print("ERROR: Could not find #humble channel!")
+        for guild in bot.guilds:
+            for text_channel in guild.text_channels:
+                if text_channel.permissions_for(guild.me).send_messages:
+                    await text_channel.send(f"**Humble Bundle Alert** (couldn't find #humble channel):")
+                    await text_channel.send(embed=embed)
+                    print(f"Sent to fallback channel: #{text_channel.name}")
+                    return
 
 async def check_and_send_new_bundles(bot):
     filename = 'data/filtered_books.json'
-    
+
     if not os.path.exists(filename):
         with open(filename, 'w') as file:
             file.write('[]')
-        
+
     current_books = load_books_from_file(filename)
     run_humble_check()
     new_books = load_books_from_file(filename)
-    
+
     difference_books = [book for book in new_books if book not in current_books]
 
     for bundle in difference_books:
