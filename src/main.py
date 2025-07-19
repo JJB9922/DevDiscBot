@@ -42,6 +42,38 @@ async def refreshhumble(ctx):
             print(f"Error in refreshhumble: {e}")
     else:
         await ctx.respond("❌ You don't have permission to use this command.")
+
+@bot.command(description="Refresh the humble bundle data (detailed)")
+async def refreshhumbledetailed(ctx):
+    if ctx.author.id in constants.devList.values():
+        await ctx.respond("🔄 Starting humble bundle check...")
+        
+        try:
+            filename = 'data/filtered_books.json'
+            if os.path.exists(filename):
+                current_books = load_books_from_file(filename)
+                current_count = len(current_books)
+            else:
+                current_count = 0
+            
+            await ctx.followup.send(f"📚 Current bundles in database: {current_count}")
+            
+            await check_and_send_new_bundles(bot)
+            
+            new_books = load_books_from_file(filename)
+            new_count = len(new_books)
+            difference = new_count - current_count
+            
+            if difference > 0:
+                await ctx.followup.send(f"🎉 Found {difference} new bundle(s)! Total: {new_count}")
+            else:
+                await ctx.followup.send(f"ℹ️ No new bundles found. Total: {new_count}")
+                
+        except Exception as e:
+            await ctx.followup.send(f"❌ Error occurred: {str(e)}")
+            print(f"Error in refreshhumbledetailed: {e}")
+    else:
+        await ctx.respond("❌ You don't have permission to use this command.")
         
 @bot.command(description="Purge the chat of the last 10 messages")
 async def clear(ctx):
