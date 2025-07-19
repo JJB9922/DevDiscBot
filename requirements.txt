@@ -1,0 +1,5 @@
+discord.py
+python-dotenv
+uwuipy
+requests
+beautifulsoup4
