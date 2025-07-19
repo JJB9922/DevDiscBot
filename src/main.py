@@ -31,9 +31,17 @@ async def makers(ctx):
     await ctx.respond(embed=embed)
         
 @bot.command(description="Refresh the humble bundle data")
-async def refreshhumble(message):
-    if message.author == bot.user and message.author.id in constants.devList.values():
-        await check_and_send_new_bundles(bot)
+async def refreshhumble(ctx):
+    if ctx.author.id in constants.devList.values():
+        await ctx.respond("🔄 Checking for new humble bundles...")
+        try:
+            await check_and_send_new_bundles(bot)
+            await ctx.followup.send("✅ Humble bundle check completed!")
+        except Exception as e:
+            await ctx.followup.send(f"❌ Error: {str(e)}")
+            print(f"Error in refreshhumble: {e}")
+    else:
+        await ctx.respond("❌ You don't have permission to use this command.")
         
 @bot.command(description="Purge the chat of the last 10 messages")
 async def clear(ctx):
