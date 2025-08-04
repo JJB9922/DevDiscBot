@@ -16,5 +16,6 @@ humblekeywords = [
     'game development'
     'game design',
     'programming',
-    'linux'
+    'linux',
+    'developer'
 ]
