@@ -168,7 +168,7 @@ async def on_message(message):
     if not any(role.name == "Forsaken..." for role in member.roles):
         return
 
-    uwu = uwuipy(None, 0.3, 0.3, 0.3, 0.3, True)
+    uwu = uwuipy(None, 1.0, 1.0, 1.0, 1.0, True, 4)
 
     # reuse webhook instead of creating every time
     webhook = webhook_cache.get(message.channel.id)
